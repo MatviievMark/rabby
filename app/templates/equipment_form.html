@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if equipment %}Edit Equipment{% else %}Add Equipment{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>{% if equipment %}Edit Equipment{% else %}Add Equipment{% endif %}</h2>
+        <form method="POST">
+            <div class="mb-3">
+                <label for="name" class="form-label">Equipment Name</label>
+                <input type="text" class="form-control" id="name" name="name" 
+                       value="{{ equipment.name if equipment else '' }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3">{{ equipment.description if equipment else '' }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="serial_number" class="form-label">Serial Number</label>
+                <input type="text" class="form-control" id="serial_number" name="serial_number"
+                       value="{{ equipment.serial_number if equipment else '' }}">
+            </div>
+            
+            <div class="mb-3">
+                <label for="purchase_date" class="form-label">Purchase Date</label>
+                <input type="date" class="form-control" id="purchase_date" name="purchase_date"
+                       value="{{ equipment.purchase_date.strftime('%Y-%m-%d') if equipment and equipment.purchase_date else '' }}">
+            </div>
+            
+            <div class="mb-3">
+                <label for="purchase_price" class="form-label">Purchase Price</label>
+                <input type="number" step="0.01" class="form-control" id="purchase_price" name="purchase_price"
+                       value="{{ equipment.purchase_price if equipment else '' }}">
+            </div>
+            
+            <div class="mb-3">
+                <label for="condition" class="form-label">Condition</label>
+                <select class="form-control" id="condition" name="condition">
+                    {% for condition in ['New', 'Good', 'Fair', 'Poor'] %}
+                        <option value="{{ condition }}" 
+                                {% if equipment and equipment.condition == condition %}selected{% endif %}>
+                            {{ condition }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <input type="text" class="form-control" id="category" name="category"
+                       value="{{ equipment.category if equipment else '' }}">
+            </div>
+            
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" name="location"
+                       value="{{ equipment.location if equipment else '' }}">
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="is_public" name="is_public"
+                       {% if equipment and equipment.is_public %}checked{% endif %}>
+                <label class="form-check-label" for="is_public">Make this equipment public</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                {% if equipment %}Update Equipment{% else %}Add Equipment{% endif %}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

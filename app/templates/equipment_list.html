@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Equipment List{% endblock %}
+
+{% block content %}
+<!-- In equipment_list.html, add this before the My Equipment section -->
+<div class="row mb-4">
+    <div class="col-md-6 offset-md-3">
+        <form action="{{ url_for('main.equipment_list') }}" method="get" class="d-flex">
+            <input type="search" 
+                   name="search" 
+                   class="form-control me-2" 
+                   placeholder="Search equipment..." 
+                   value="{{ search_query if search_query else '' }}">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+<!-- Optional: Add this for showing search results status -->
+{% if search_query %}
+<div class="alert alert-info">
+    Showing results for: "{{ search_query }}"
+    <a href="{{ url_for('main.equipment_list') }}" class="float-end">Clear search</a>
+</div>
+{% endif %}
+
+<div class="mb-4">
+    <h2>My Equipment</h2>
+    <div class="row">
+        {% for item in personal_equipment %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.name }}</h5>
+                        <p class="card-text">{{ item.description }}</p>
+                        <p class="text-muted small">Added: {{ item.date_added.strftime('%Y-%m-%d') }}</p>
+                        <span class="badge bg-secondary">Private</span>
+                        <div class="mt-2">
+                            <a href="{{ url_for('main.view_equipment', id=item.id) }}" class="btn btn-sm btn-primary">View</a>
+                            <a href="{{ url_for('main.edit_equipment', id=item.id) }}" class="btn btn-sm btn-secondary">Edit</a>
+                            <form action="{{ url_for('main.delete_equipment', id=item.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mt-4">
+    <h2>Public Equipment</h2>
+    <div class="row">
+        {% for item in public_equipment %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.name }}</h5>
+                        <p class="card-text">{{ item.description }}</p>
+                        <p class="text-muted small">
+                            Owner: {{ item.owner.username }}<br>
+                            Added: {{ item.date_added.strftime('%Y-%m-%d') }}
+                        </p>
+                        <span class="badge bg-success">Public</span>
+                        <div class="mt-2">
+                            <a href="{{ url_for('main.view_equipment', id=item.id) }}" class="btn btn-sm btn-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
